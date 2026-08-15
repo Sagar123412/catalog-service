@@ -1,4 +1,3 @@
 node_modules
-logs
-npm-debug.log
-.env
+npm - debug.log
+    .env

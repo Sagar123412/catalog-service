@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "cross-env nodemon -L src/server.ts",
+    "dev": "cross-env NODE_ENV=dev nodemon src/server.ts",
     "formate:check": "prettier . --check",
     "formate:write": "prettier . --write",
     "prepare": "husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --watch --runInBand"
+    "test": "jest --no-cache --coverage --all --runInBand",
+    "test:watch": "jest --no-cache --coverage --all --watch --runInBand"
   },
   "author": "Sagar",
   "license": "ISC",
