@@ -1,17 +1,16 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { globalErrorHandler } from "./common/middlewares/globalErrorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import categoryRouter from "./category/category-router";
 
 const app = express();
 
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).send("home route");
-});
+app.use("/categories", categoryRouter);
 
 //global error handler middleware
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
