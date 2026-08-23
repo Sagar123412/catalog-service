@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { globalErrorHandler } from "./common/middlewares/globalErrorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 

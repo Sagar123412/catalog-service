@@ -1,7 +1,7 @@
 import config from "config";
 import app from "./app";
-import logger from "./config/logger";
-import { initDB } from "./config/db";
+import logger from "./common/config/logger";
+import { initDB } from "./common/config/db";
 
 const startServer = async () => {
   const PORT = config.get("server.port");
