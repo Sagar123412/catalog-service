@@ -3,6 +3,7 @@ import { globalErrorHandler } from "./common/middlewares/globalErrorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import categoryRouter from "./category/category-router";
+import productRouter from "./product/product-route";
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/categories", categoryRouter);
+app.use("/product", productRouter);
 
 //global error handler middleware
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
