@@ -4,6 +4,7 @@ import { Category, PriceConfiguration } from "./category-types";
 import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "./category-service";
 import { Logger } from "winston";
+import mongoose from "mongoose";
 
 export class CategoryController {
   constructor(
@@ -14,6 +15,7 @@ export class CategoryController {
     this.getOne = this.getOne.bind(this);
     this.index = this.index.bind(this);
     this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
@@ -46,6 +48,11 @@ export class CategoryController {
     }
 
     const categoryId = req.params.id;
+
+    if (!categoryId || !mongoose.Types.ObjectId.isValid(categoryId)) {
+      return next(createHttpError(400, "Invalid category id"));
+    }
+
     const updateData = req.body as Partial<Category>;
 
     // Check if category exists
@@ -95,6 +102,10 @@ export class CategoryController {
   async getOne(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return next(createHttpError(400, "Invalid category id"));
+    }
+
     const category = await this.categoryService.getOne(id);
 
     if (!category) {
@@ -104,5 +115,27 @@ export class CategoryController {
     this.logger.info(`Getting category`, { id: category._id });
 
     res.json(category);
+  }
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return next(createHttpError(400, "Invalid category id"));
+    }
+
+    this.logger.info(`Deleted category`, { id: id });
+
+    const category = await this.categoryService.getOne(id);
+
+    if (!category) {
+      return next(createHttpError(404, "Category not found"));
+    }
+
+    await this.categoryService.deleteOne(id);
+
+    this.logger.info(`Deleted category`, { id: category._id });
+
+    res.json({ id: category._id });
   }
 }

@@ -25,4 +25,8 @@ export class CategoryService {
       { new: true },
     );
   }
+
+  async deleteOne(categoryId: string) {
+    return await categoryModel.findByIdAndDelete(categoryId);
+  }
 }

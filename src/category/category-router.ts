@@ -34,6 +34,14 @@ router.patch(
 
 router.get("/", asyncWrapper(categoryController.index));
 
+//delete category
+router.delete(
+  "/:id",
+  authenticate,
+  canAccess([Roles.ADMIN]),
+  asyncWrapper(categoryController.delete),
+);
+
 //get a single category
 router.get("/:id", asyncWrapper(categoryController.getOne));
 
