@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import categoryRouter from "./category/category-router";
 import productRouter from "./product/product-route";
+import toppingRouter from "./toppings/topping-router";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cookieParser());
 
 app.use("/categories", categoryRouter);
 app.use("/product", productRouter);
+app.use("/topping", toppingRouter);
 
 //global error handler middleware
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
