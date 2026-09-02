@@ -18,6 +18,8 @@ export class ProductController {
     this.create = this.create.bind(this);
     this.getOne = this.getOne.bind(this);
     this.delete = this.delete.bind(this);
+    this.update = this.update.bind(this);
+    this.index = this.index.bind(this);
   }
 
   create = async (req: Request, res: Response, next: NextFunction) => {
@@ -197,6 +199,8 @@ export class ProductController {
         limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
       },
     );
+
+    console.log("products", products);
 
     const finalProducts = (products.data as Product[]).map(
       (product: Product) => {

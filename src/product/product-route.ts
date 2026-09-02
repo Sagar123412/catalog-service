@@ -50,6 +50,9 @@ router.put(
   asyncWrapper(productController.update),
 );
 
+// get all products with panigation and query search
+router.get("/", asyncWrapper(productController.index));
+
 //get a product
 router.get("/:productId", asyncWrapper(productController.getOne));
 
@@ -60,8 +63,5 @@ router.delete(
   canAccess([Roles.ADMIN, Roles.MANAGER]),
   asyncWrapper(productController.delete),
 );
-
-// get all products with panigation and query search
-router.get("/", asyncWrapper(productController.index));
 
 export default router;

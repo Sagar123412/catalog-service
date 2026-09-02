@@ -28,13 +28,16 @@ export class ProductService {
     )) as Product;
   }
 
-  async getProducts(q: string, filters: Filter, paginateQuery: PaginateQuery) {
-    const searchQueryRegexp = new RegExp(q, "i");
+  async getProducts(
+    q: string | undefined,
+    filters: Filter,
+    paginateQuery: PaginateQuery,
+  ) {
+    const matchQuery: Record<string, unknown> = { ...filters };
 
-    const matchQuery = {
-      ...filters,
-      name: searchQueryRegexp,
-    };
+    if (q && q.trim()) {
+      matchQuery.name = { $regex: q.trim(), $options: "i" };
+    }
 
     const aggregate = productModel.aggregate([
       {
@@ -59,7 +62,10 @@ export class ProductService {
         },
       },
       {
-        $unwind: "$category",
+        $unwind: {
+          path: "$category",
+          preserveNullAndEmptyArrays: true,
+        },
       },
     ]);
 

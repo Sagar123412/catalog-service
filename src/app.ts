@@ -8,13 +8,18 @@ import toppingRouter from "./toppings/topping-router";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:8000"],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/categories", categoryRouter);
-app.use("/product", productRouter);
-app.use("/topping", toppingRouter);
+app.use("/products", productRouter);
+app.use("/toppings", toppingRouter);
 
 //global error handler middleware
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
