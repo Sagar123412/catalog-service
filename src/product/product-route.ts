@@ -10,11 +10,18 @@ import { ProductController } from "./product-controller";
 import { ProductService } from "./product-service";
 import { S3Storage } from "../common/services/S3Storage";
 import updateProductValidator from "./update-product-validator";
+import { createMessageProducerBroker } from "../common/factories/brokerFactory";
 
 const router = express.Router();
 const s3Storage = new S3Storage();
 const productService = new ProductService();
-const productController = new ProductController(productService, s3Storage);
+const broker = createMessageProducerBroker();
+
+const productController = new ProductController(
+  productService,
+  s3Storage,
+  broker,
+);
 
 //create a product
 router.post(

@@ -9,11 +9,14 @@ import { Filter, Product } from "./product-types";
 import { AuthRequest } from "../common/types";
 import { Roles } from "../common/constants";
 import mongoose from "mongoose";
+import { MessageProducerBroker } from "../common/types/broker";
+import config from "config";
 
 export class ProductController {
   constructor(
     private productService: ProductService,
     private storage: FileStorage,
+    private broker: MessageProducerBroker,
   ) {
     this.create = this.create.bind(this);
     this.getOne = this.getOne.bind(this);
@@ -59,6 +62,17 @@ export class ProductController {
 
     const newProduct = await this.productService.createProduct(
       product as unknown as Product,
+    );
+
+    // Send a message to Kafka with the new product's ID and price configuration
+    //so order service can consume it
+    //to topic "product"
+    await this.broker.sendMessage(
+      config.get("kafka.productTopic"),
+      JSON.stringify({
+        id: newProduct._id,
+        priceConfiguration: newProduct.priceConfiguration,
+      }),
     );
 
     res.json({ id: newProduct._id });
@@ -127,6 +141,14 @@ export class ProductController {
     const updatedProduct = await this.productService.updateProduct(
       productId,
       productToUpdate,
+    );
+
+    await this.broker.sendMessage(
+      config.get("kafka.productTopic"),
+      JSON.stringify({
+        id: updatedProduct._id,
+        priceConfiguration: updatedProduct.priceConfiguration,
+      }),
     );
 
     res.json({ id: updatedProduct._id });
