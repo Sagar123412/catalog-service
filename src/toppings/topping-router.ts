@@ -10,14 +10,18 @@ import createToppingValidator from "./create-topping-validator";
 import updateToppingValidator from "./update-topping-validator";
 import { ToppingService } from "./topping-service";
 import { ToppingController } from "./topping-controller";
+import { createMessageProducerBroker } from "../common/factories/brokerFactory";
 
 const router = express.Router();
+
+const broker = createMessageProducerBroker();
 
 const toppingService = new ToppingService();
 
 const toppingController = new ToppingController(
   new S3Storage(),
   toppingService,
+  broker,
 );
 
 router.post(

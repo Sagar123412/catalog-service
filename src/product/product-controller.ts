@@ -11,6 +11,7 @@ import { Roles } from "../common/constants";
 import mongoose from "mongoose";
 import { MessageProducerBroker } from "../common/types/broker";
 import config from "config";
+import { mapToObject } from "../utils";
 
 export class ProductController {
   constructor(
@@ -71,7 +72,9 @@ export class ProductController {
       config.get("kafka.productTopic"),
       JSON.stringify({
         id: newProduct._id,
-        priceConfiguration: newProduct.priceConfiguration,
+        priceConfiguration: mapToObject(
+          newProduct.priceConfiguration as unknown as Map<string, any>,
+        ),
       }),
     );
 
@@ -147,7 +150,9 @@ export class ProductController {
       config.get("kafka.productTopic"),
       JSON.stringify({
         id: updatedProduct._id,
-        priceConfiguration: updatedProduct.priceConfiguration,
+        priceConfiguration: mapToObject(
+          updatedProduct.priceConfiguration as unknown as Map<string, any>,
+        ),
       }),
     );
 

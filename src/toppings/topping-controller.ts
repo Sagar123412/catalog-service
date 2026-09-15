@@ -7,11 +7,14 @@ import mongoose from "mongoose";
 import { FileStorage } from "../common/types/storage";
 import { ToppingService } from "./topping-service";
 import { CreataeRequestBody, Topping } from "./topping-type";
+import { MessageProducerBroker } from "../common/types/broker";
+import config from "config";
 
 export class ToppingController {
   constructor(
     private storage: FileStorage,
     private toppingService: ToppingService,
+    private broker: MessageProducerBroker, // todo: add type for broker
   ) {}
 
   create = async (
@@ -38,6 +41,15 @@ export class ToppingController {
       // todo: add logging
 
       // Send topping to kafka.
+
+      await this.broker.sendMessage(
+        config.get("kafka.toppingTopic"),
+        JSON.stringify({
+          id: savedTopping._id,
+          price: savedTopping.price,
+          tenantId: savedTopping.tenantId,
+        }),
+      );
 
       res.json({ id: savedTopping._id });
     } catch (err) {
@@ -145,6 +157,15 @@ export class ToppingController {
         ...(tenantId !== undefined && { tenantId }),
         image,
       });
+
+      this.broker.sendMessage(
+        config.get("kafka.toppingTopic"),
+        JSON.stringify({
+          id: updatedTopping?._id,
+          price: updatedTopping?.price,
+          tenantId: updatedTopping?.tenantId,
+        }),
+      );
 
       res.json({ id: updatedTopping?._id });
     } catch (err) {
