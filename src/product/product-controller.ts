@@ -5,7 +5,7 @@ import createHttpError from "http-errors";
 import { v4 as uuidv4 } from "uuid";
 import { FileStorage } from "../common/types/storage";
 import { ProductService } from "./product-service";
-import { Filter, Product } from "./product-types";
+import { Filter, Product, ProductEvents } from "./product-types";
 import { AuthRequest } from "../common/types";
 import { Roles } from "../common/constants";
 import mongoose from "mongoose";
@@ -71,10 +71,13 @@ export class ProductController {
     await this.broker.sendMessage(
       config.get("kafka.productTopic"),
       JSON.stringify({
-        id: newProduct._id,
-        priceConfiguration: mapToObject(
-          newProduct.priceConfiguration as unknown as Map<string, any>,
-        ),
+        event: ProductEvents.PRODUCT_CREATE,
+        data: {
+          id: newProduct._id,
+          priceConfiguration: mapToObject(
+            newProduct.priceConfiguration as unknown as Map<string, any>,
+          ),
+        },
       }),
     );
 
@@ -149,10 +152,13 @@ export class ProductController {
     await this.broker.sendMessage(
       config.get("kafka.productTopic"),
       JSON.stringify({
-        id: updatedProduct._id,
-        priceConfiguration: mapToObject(
-          updatedProduct.priceConfiguration as unknown as Map<string, any>,
-        ),
+        event: ProductEvents.PRODUCT_UPDATE,
+        data: {
+          id: updatedProduct._id,
+          priceConfiguration: mapToObject(
+            updatedProduct.priceConfiguration as unknown as Map<string, any>,
+          ),
+        },
       }),
     );
 
