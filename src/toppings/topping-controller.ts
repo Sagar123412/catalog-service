@@ -161,7 +161,7 @@ export class ToppingController {
         image,
       });
 
-      this.broker.sendMessage(
+      await this.broker.sendMessage(
         config.get("kafka.toppingTopic"),
         JSON.stringify({
           event: ToppingEvents.TOPPING_UPDATE,
