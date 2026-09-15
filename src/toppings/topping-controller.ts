@@ -6,7 +6,7 @@ import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { FileStorage } from "../common/types/storage";
 import { ToppingService } from "./topping-service";
-import { CreataeRequestBody, Topping } from "./topping-type";
+import { CreataeRequestBody, Topping, ToppingEvents } from "./topping-type";
 import { MessageProducerBroker } from "../common/types/broker";
 import config from "config";
 
@@ -45,9 +45,12 @@ export class ToppingController {
       await this.broker.sendMessage(
         config.get("kafka.toppingTopic"),
         JSON.stringify({
-          id: savedTopping._id,
-          price: savedTopping.price,
-          tenantId: savedTopping.tenantId,
+          event: ToppingEvents.TOPPING_CREATE,
+          data: {
+            id: savedTopping._id,
+            price: savedTopping.price,
+            tenantId: savedTopping.tenantId,
+          },
         }),
       );
 
@@ -161,9 +164,12 @@ export class ToppingController {
       this.broker.sendMessage(
         config.get("kafka.toppingTopic"),
         JSON.stringify({
-          id: updatedTopping?._id,
-          price: updatedTopping?.price,
-          tenantId: updatedTopping?.tenantId,
+          event: ToppingEvents.TOPPING_UPDATE,
+          data: {
+            id: updatedTopping?._id,
+            price: updatedTopping?.price,
+            tenantId: updatedTopping?.tenantId,
+          },
         }),
       );
 
